@@ -85,7 +85,7 @@
 			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.jtl"
 			out="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"
 			style="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras\jmeter-results-detail-report_21.xsl" />
-		<param name="showData" expression="${show-data}" />
+	<!--	<param name="showData" expression="${show-data}" /> -->
 	</target>
 
 	<!-- Check that the xalan libraries are present -->
