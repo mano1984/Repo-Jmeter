@@ -40,22 +40,23 @@
 	<taskdef name="jmeter" classpathref="jmeter.classpath"
 		classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
 
-	<target name="all" depends="run,report" />
+	<target name="all" depends="run,create-reports" />
 
 	<target name="run">
 		<echo>
 			funcMode = ${funcMode}
 		</echo>
-		
-		<!--Se eliminan los reportes con los resultados viejos y se crean unos nuevos -->
+
+		<!--Se eliminan los reportes con los resultados viejos y se crean unos 
+			nuevos -->
 		<delete
 			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"></delete>
 		<delete
-			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.jtl"></delete>
+			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"></delete>
 
 		<jmeter jmeterhome="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10"
 			testplan="C:\Mano\JMeter\apache-jmeter-2.10\Export BadBoy\Badboy_formulario.jmx"
-			resultlog="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.jtl">
+			resultlog="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml">
 
 			<!-- Force suitable defaults -->
 			<property name="jmeter.save.saveservice.output_format"
@@ -80,9 +81,81 @@
 		<fileset dir="${lib.dir}" includes="serializer*.jar" />
 	</path>
 
-	<target name="report" depends="_message_xalan">
+	<target name="create-graphs1" depends="_message_xalan">
+		<property  name= "reportType" value="TimesVsThreads" />
+		<sequential>
+				<java
+					jar="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib\ext\CMDRunner.jar"
+					fork="true">
+					<arg value="--tool" />
+					<arg value="Reporter" />
+					<arg value="--generate-png" />
+					<arg
+						value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\TimesVsThreads.png" />
+					<arg value="--input-jtl" />
+					<arg
+						value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml" />
+					<arg value="--plugin-type" />
+					<arg value="TimesVsThreads" />
+					<arg value="--width" />
+					<arg value="800" />
+					<arg value="--height" />
+					<arg value="600" />
+				</java>
+	</sequential> 
+	</target>
+	
+		<target name="create-graphs2" depends="_message_xalan">
+		<property  name= "reportType" value="ResponseTimesOverTime" />
+		<sequential>
+				<java
+					jar="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib\ext\CMDRunner.jar"
+					fork="true">
+					<arg value="--tool" />
+					<arg value="Reporter" />
+					<arg value="--generate-png" />
+					<arg
+						value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ResponseTimesOverTime.png" />
+					<arg value="--input-jtl" />
+					<arg
+						value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml" />
+					<arg value="--plugin-type" />
+					<arg value="ResponseTimesOverTime" />
+					<arg value="--width" />
+					<arg value="800" />
+					<arg value="--height" />
+					<arg value="600" />
+				</java>
+	</sequential> 
+	</target>
+	
+	<target name="create-graphs3" depends="_message_xalan">
+		<property  name= "reportType" value="ThreadsStateOverTime" />
+		<sequential>
+				<java
+					jar="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib\ext\CMDRunner.jar"
+					fork="true">
+					<arg value="--tool" />
+					<arg value="Reporter" />
+					<arg value="--generate-png" />
+					<arg
+						value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ThreadsStateOverTime.png" />
+					<arg value="--input-jtl" />
+					<arg
+						value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml" />
+					<arg value="--plugin-type" />
+					<arg value="ThreadsStateOverTime" />
+					<arg value="--width" />
+					<arg value="800" />
+					<arg value="--height" />
+					<arg value="600" />
+				</java>
+	</sequential> 
+	</target>
+	
+	<target name="create-reports" depends="create-graphs1, create-graphs2, create-graphs3">
 		<xslt
-			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.jtl"
+			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
 			out="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"
 			style="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras\jmeter-results-detail-report_21.xsl" />
 	<!--	<param name="showData" expression="${show-data}" /> -->
@@ -109,5 +182,5 @@
 		<echo>Check you have xalan and serializer jars in ${lib.dir}
 		</echo>
 	</target>
-
+	
 </project>
