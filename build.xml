@@ -40,7 +40,7 @@
 	<taskdef name="jmeter" classpathref="jmeter.classpath"
 		classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
 
-	<target name="all" depends="run,create-reports" />
+	<target name="all" depends="run,create-reports,create-graphs1,create-graphs2,create-graphs3" />
 
 	<target name="run">
 		<echo>
@@ -81,7 +81,7 @@
 		<fileset dir="${lib.dir}" includes="serializer*.jar" />
 	</path>
 
-	<target name="create-graphs1" depends="_message_xalan">
+	<target name="create-graphs1" depends="create-reports">
 		<property  name= "reportType" value="TimesVsThreads" />
 		<sequential>
 				<java
@@ -105,7 +105,7 @@
 	</sequential> 
 	</target>
 	
-		<target name="create-graphs2" depends="_message_xalan">
+		<target name="create-graphs2" depends="create-graphs1">
 		<property  name= "reportType" value="ResponseTimesOverTime" />
 		<sequential>
 				<java
@@ -129,7 +129,7 @@
 	</sequential> 
 	</target>
 	
-	<target name="create-graphs3" depends="_message_xalan">
+	<target name="create-graphs3" depends="create-graphs2">
 		<property  name= "reportType" value="ThreadsStateOverTime" />
 		<sequential>
 				<java
@@ -153,7 +153,7 @@
 	</sequential> 
 	</target>
 	
-	<target name="create-reports" depends="create-graphs1, create-graphs2, create-graphs3">
+	<target name="create-reports" depends="_message_xalan">
 		<xslt
 			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
 			out="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"
