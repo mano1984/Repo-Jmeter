@@ -2,35 +2,11 @@
 
 <project name="Prueba" default="all">
 
+	<!-- Ruta donde se encuentra el JMeter -->
 	<property name="jmeter.home"
 		value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10" />
 
-	<!-- Name of test (without .jmx) -->
-	<property name="test" value="Test" />
-
-	<!-- Should report include response data for failures? -->
-	<property name="show-data" value="n" />
-
-	<property name="format" value="2.1" />
-
-	<condition property="style_version" value="">
-		<equals arg1="${format}" arg2="2.0" />
-	</condition>
-
-	<condition property="style_version" value="_21">
-		<equals arg1="${format}" arg2="2.1" />
-	</condition>
-
-	<condition property="funcMode">
-		<equals arg1="${show-data}" arg2="y" />
-	</condition>
-
-	<condition property="funcMode" value="false">
-		<not>
-			<equals arg1="${show-data}" arg2="y" />
-		</not>
-	</condition>
-
+	<!-- Se indica la ruta de la carpeta "extras" de ANT -->
 	<path id="jmeter.classpath">
 		<fileset dir="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras">
 			<include name="ant-jmeter*.jar" />
@@ -40,14 +16,17 @@
 	<taskdef name="jmeter" classpathref="jmeter.classpath"
 		classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
 
+	<!-- Se indican todos los targets que se tienen que ejecutar y en que orden -->
 	<target name="all"
-		depends="run,resultado_JMeter, create-reports,create-graphs1,create-graphs2,create-graphs3" />
+		depends="run, resultado_JMeter, create-reports, create-graphs1, create-graphs2, create-graphs3" />
 
+	<!--En el target "run" se indican los archivos de JMeter que se tienen que 
+		ejecutar y donde se guardan los resultados -->
 	<target name="run">
+
+		<!-- la propiedad "test.fail" indica si la ejecución de los casos de JMeter, 
+			dieron algun error -->
 		<property name="test.fail" value="false" />
-		<echo>
-			funcMode = ${funcMode}
-		</echo>
 
 		<!--Se eliminan los reportes con los resultados viejos y se crean unos 
 			nuevos -->
@@ -56,41 +35,45 @@
 		<delete
 			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"></delete>
 
+		<delete
+			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\TimesVsThreads.png"></delete>
+
+		<delete
+			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ResponseTimesOverTime.png"></delete>
+
+		<delete
+			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ThreadsStateOverTime.png"></delete>
+
 		<jmeter jmeterhome="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10"
 			testplan="C:\Mano\JMeter\apache-jmeter-2.10\Export BadBoy\Badboy_formulario.jmx"
 			resultlog="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
 			failureProperty="test.fail">
 
-			<!-- Force suitable defaults -->
+			<!-- Indicar valores predeterminados -->
 			<property name="jmeter.save.saveservice.output_format"
 				value="xml" />
 			<property name="jmeter.save.saveservice.assertion_results"
 				value="all" />
 			<property name="jmeter.save.saveservice.bytes" value="true" />
-			<property name="file_format.testlog" value="${format}" />
-			<property name="jmeter.save.saveservice.response_data.on_error"
-				value="${funcMode}" />
-
 		</jmeter>
-
 	</target>
 
+	<!--En el target "resultado_JMeter" se indica si existio algun error en 
+		la ejecución de JMeter -->
 	<target name="resultado_JMeter" depends="run">
 		<property name="test.fail" value="${test.fail}" />
 		<echo>test fail: ${test.fail}</echo>
-
 	</target>
 
-
-	<property name="lib.dir"
-		value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib" />
-
-	<!-- Use xalan copy from JMeter lib directory to ensure consistent processing 
-		with Java 1.4+ -->
-	<path id="xslt.classpath">
-		<fileset dir="${lib.dir}" includes="xalan*.jar" />
-		<fileset dir="${lib.dir}" includes="serializer*.jar" />
-	</path>
+	<!--En el target "create-report" se vuelcan los resultados de la ejecución 
+		de JMeter a una archivo html -->
+	<target name="create-reports" depends="resultado_JMeter">
+		<xslt
+			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
+			out="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"
+			style="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras\jmeter-results-detail-report_21.xsl" />
+		<!-- <param name="showData" expression="${show-data}" /> -->
+	</target>
 
 	<target name="create-graphs1" depends="create-reports">
 		<property name="reportType" value="TimesVsThreads" />
@@ -163,35 +146,4 @@
 			</java>
 		</sequential>
 	</target>
-
-	<target name="create-reports" depends="_message_xalan">
-		<xslt
-			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
-			out="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"
-			style="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras\jmeter-results-detail-report_21.xsl" />
-		<!-- <param name="showData" expression="${show-data}" /> -->
-	</target>
-
-	<!-- Check that the xalan libraries are present -->
-	<condition property="xalan.present">
-		<and>
-			<!-- No need to check all jars; just check a few -->
-			<available classpathref="xslt.classpath"
-				classname="org.apache.xalan.processor.TransformerFactoryImpl" />
-			<available classpathref="xslt.classpath"
-				classname="org.apache.xml.serializer.ExtendedContentHandler" />
-		</and>
-	</condition>
-
-	<target name="_message_xalan" unless="xalan.present">
-		<echo>
-			Cannot find all xalan and/or serialiser jars
-		</echo>
-		<echo>
-			The XSLT formatting may not work correctly.
-		</echo>
-		<echo>Check you have xalan and serializer jars in ${lib.dir}
-		</echo>
-	</target>
-
 </project>
