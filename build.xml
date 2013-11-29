@@ -31,22 +31,22 @@
 		<!--Se eliminan los reportes con los resultados viejos y se crean unos 
 			nuevos -->
 		<delete
-			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"></delete>
+			file="${jmeter.home}\Reportes\Reporte.html"></delete>
 		<delete
-			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"></delete>
+			file="${jmeter.home}\Reportes\JMeterResults.xml"></delete>
 
 		<delete
-			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\TimesVsThreads.png"></delete>
+			file="${jmeter.home}\Reportes\TimesVsThreads.png"></delete>
 
 		<delete
-			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ResponseTimesOverTime.png"></delete>
+			file="${jmeter.home}\Reportes\ResponseTimesOverTime.png"></delete>
 
 		<delete
-			file="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ThreadsStateOverTime.png"></delete>
+			file="${jmeter.home}\Reportes\ThreadsStateOverTime.png"></delete>
 
-		<jmeter jmeterhome="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10"
-			testplan="C:\Mano\JMeter\apache-jmeter-2.10\Export BadBoy\Badboy_formulario.jmx"
-			resultlog="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
+		<jmeter jmeterhome="${jmeter.home}"
+			testplan="${jmeter.home}\Export BadBoy\Badboy_formulario.jmx"
+			resultlog="${jmeter.home}\Reportes\JMeterResults.xml"
 			failureProperty="test.fail">
 
 			<!-- Indicar valores predeterminados -->
@@ -69,9 +69,9 @@
 		de JMeter a una archivo html -->
 	<target name="create-reports" depends="resultado_JMeter">
 		<xslt
-			in="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml"
-			out="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\Reporte.html"
-			style="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras\jmeter-results-detail-report_21.xsl" />
+			in="${jmeter.home}\Reportes\JMeterResults.xml"
+			out="${jmeter.home}\Reportes\Reporte.html"
+			style="${jmeter.home}\extras\jmeter-results-detail-report_21.xsl" />
 		<!-- <param name="showData" expression="${show-data}" /> -->
 	</target>
 
@@ -79,16 +79,16 @@
 		<property name="reportType" value="TimesVsThreads" />
 		<sequential>
 			<java
-				jar="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib\ext\CMDRunner.jar"
+				jar="${jmeter.home}\lib\ext\CMDRunner.jar"
 				fork="true">
 				<arg value="--tool" />
 				<arg value="Reporter" />
 				<arg value="--generate-png" />
 				<arg
-					value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\TimesVsThreads.png" />
+					value="${jmeter.home}\Reportes\TimesVsThreads.png" />
 				<arg value="--input-jtl" />
 				<arg
-					value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml" />
+					value="${jmeter.home}\Reportes\JMeterResults.xml" />
 				<arg value="--plugin-type" />
 				<arg value="TimesVsThreads" />
 				<arg value="--width" />
@@ -103,16 +103,16 @@
 		<property name="reportType" value="ResponseTimesOverTime" />
 		<sequential>
 			<java
-				jar="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib\ext\CMDRunner.jar"
+				jar="${jmeter.home}\lib\ext\CMDRunner.jar"
 				fork="true">
 				<arg value="--tool" />
 				<arg value="Reporter" />
 				<arg value="--generate-png" />
 				<arg
-					value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ResponseTimesOverTime.png" />
+					value="${jmeter.home}\Reportes\ResponseTimesOverTime.png" />
 				<arg value="--input-jtl" />
 				<arg
-					value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml" />
+					value="${jmeter.home}\Reportes\JMeterResults.xml" />
 				<arg value="--plugin-type" />
 				<arg value="ResponseTimesOverTime" />
 				<arg value="--width" />
@@ -127,16 +127,16 @@
 		<property name="reportType" value="ThreadsStateOverTime" />
 		<sequential>
 			<java
-				jar="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\lib\ext\CMDRunner.jar"
+				jar="${jmeter.home}\lib\ext\CMDRunner.jar"
 				fork="true">
 				<arg value="--tool" />
 				<arg value="Reporter" />
 				<arg value="--generate-png" />
 				<arg
-					value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\ThreadsStateOverTime.png" />
+					value="${jmeter.home}\Reportes\ThreadsStateOverTime.png" />
 				<arg value="--input-jtl" />
 				<arg
-					value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\Reportes\JMeterResults.xml" />
+					value="${jmeter.home}\Reportes\JMeterResults.xml" />
 				<arg value="--plugin-type" />
 				<arg value="ThreadsStateOverTime" />
 				<arg value="--width" />
