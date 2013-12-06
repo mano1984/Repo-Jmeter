@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Prueba" default="all">
+
+	<!-- Ruta donde se encuentra el JMeter -->
+	<property name="jmeter.home"
+		value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10" />
+
+	<!-- Se indica la ruta de la carpeta "extras" de ANT -->
+	<path id="jmeter.classpath">
+		<fileset dir="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras">
+			<include name="ant-jmeter*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef name="jmeter" classpathref="jmeter.classpath"
+		classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
+
+	<!-- Se indican todos los targets que se tienen que ejecutar y en que orden -->
+	<target name="all"
+		depends="run, resultado_JMeter, create-reports, create-reports, create-graphs1, create-graphs2, create-graphs3" />
+
+	<!--En el target "run" se indican los archivos de JMeter que se tienen que 
+		ejecutar y donde se guardan los resultados -->
+	<target name="run">
+
+		<!-- la propiedad "test.fail" indica si la ejecución de los casos de JMeter, 
+			dieron algun error -->
+		<property name="test.fail" value="false" />
+
+		<!--Se eliminan los reportes con los resultados viejos y se crean unos 
+			nuevos -->
+		<delete
+			file="${jmeter.home}\Reportes\Reporte.html"></delete>
+			
+		<delete
+			file="${jmeter.home}\Reportes\JMeterResults.xml"></delete>
+
+		<delete
+			file="${jmeter.home}\Reportes\TimesVsThreads.png"></delete>
+
+		<delete
+			file="${jmeter.home}\Reportes\ResponseTimesOverTime.png"></delete>
+
+		<delete
+			file="${jmeter.home}\Reportes\ThreadsStateOverTime.png"></delete>
+
+		<jmeter jmeterhome="${jmeter.home}"
+			testplan="${jmeter.home}\Pruebas Adapter\Consulta REST.jmx"
+			resultlog="${jmeter.home}\Reportes\JMeterResults.xml"
+			failureProperty="test.fail"
+			runremote="true"> 
+
+			<!-- Indicar valores predeterminados -->
+			<property name="jmeter.save.saveservice.output_format"
+				value="xml" />
+			<property name="jmeter.save.saveservice.assertion_results"
+				value="all" />
+			<property name="jmeter.save.saveservice.bytes" value="true" /> 
+			
+			<property name="runremote" value="true" />
+			
+			<property name="remote_hosts" value="172.23.1.125:3333"/>
+
+		</jmeter>
+	</target>
+
+<!--	<target name="run-remoto1" depends="run">
+	<jmeter jmeterhome="${jmeter.home}"
+			testplan="${jmeter.home}\Export BadBoy\Badboy_formulario.jmx"
+			resultlog="${jmeter.home}\Reportes\JMeterResults.xml"
+			failureProperty="test.fail"> -->
+			
+			<!-- Indicar valores predeterminados -->
+		<!--	<property name="jmeter.save.saveservice.output_format"
+				value="xml" />
+			<property name="jmeter.save.saveservice.assertion_results"
+				value="all" />
+			<property name="jmeter.save.saveservice.bytes" value="true" /> -->
+			
+			<!-- Indicar valores predeterminados -->
+	<!--		<property name="remote_hosts" value="172.23.1.109:3333"/>
+
+		</jmeter>
+	</target> -->
+	
+<!--	<target name="run-remoto2" depends="run">
+	<jmeter jmeterhome="${jmeter.home}"
+			testplan="${jmeter.home}\Export BadBoy\Badboy_formulario.jmx"
+			resultlog="${jmeter.home}\Reportes\JMeterResults.xml"
+			failureProperty="test.fail">
+			
+
+			<property name="jmeter.save.saveservice.output_format"
+				value="xml" />
+			<property name="jmeter.save.saveservice.assertion_results"
+				value="all" />
+			<property name="jmeter.save.saveservice.bytes" value="true" />
+			
+
+			<property name="remote_hosts" value="172.23.1.125:3333"/>
+
+		</jmeter>
+	</target> -->
+	
+	<!--En el target "resultado_JMeter" se indica si existio algun error en 
+		la ejecución de JMeter -->
+	<target name="resultado_JMeter" depends="run">
+		<property name="test.fail" value="${test.fail}" />
+		<echo>test fail: ${test.fail}</echo>
+	</target>
+
+	<!--En el target "create-report" se vuelcan los resultados de la ejecución 
+		de JMeter a una archivo html -->
+	<target name="create-reports" depends="resultado_JMeter">
+		<xslt
+			in="${jmeter.home}\Reportes\JMeterResults.xml"
+			out="${jmeter.home}\Reportes\Reporte.html"
+			style="${jmeter.home}\extras\jmeter-results-detail-report_21.xsl" />
+		<!-- <param name="showData" expression="${show-data}" /> -->
+	</target>
+	
+	<target name="create-graphs1" depends="create-reports">
+		<property name="reportType" value="TimesVsThreads" />
+		<sequential>
+			<java
+				jar="${jmeter.home}\lib\ext\CMDRunner.jar"
+				fork="true">
+				<arg value="--tool" />
+				<arg value="Reporter" />
+				<arg value="--generate-png" />
+				<arg
+					value="${jmeter.home}\Reportes\TimesVsThreads.png" />
+				<arg value="--input-jtl" />
+				<arg
+					value="${jmeter.home}\Reportes\JMeterResults.xml" />
+				<arg value="--plugin-type" />
+				<arg value="TimesVsThreads" />
+				<arg value="--width" />
+				<arg value="800" />
+				<arg value="--height" />
+				<arg value="600" />
+			</java>
+		</sequential>
+	</target>
+
+	<target name="create-graphs2" depends="create-graphs1">
+		<property name="reportType" value="ResponseTimesOverTime" />
+		<sequential>
+			<java
+				jar="${jmeter.home}\lib\ext\CMDRunner.jar"
+				fork="true">
+				<arg value="--tool" />
+				<arg value="Reporter" />
+				<arg value="--generate-png" />
+				<arg
+					value="${jmeter.home}\Reportes\ResponseTimesOverTime.png" />
+				<arg value="--input-jtl" />
+				<arg
+					value="${jmeter.home}\Reportes\JMeterResults.xml" />
+				<arg value="--plugin-type" />
+				<arg value="ResponseTimesOverTime" />
+				<arg value="--width" />
+				<arg value="800" />
+				<arg value="--height" />
+				<arg value="600" />
+			</java>
+		</sequential>
+	</target>
+
+	<target name="create-graphs3" depends="create-graphs2">
+		<property name="reportType" value="ThreadsStateOverTime" />
+		<sequential>
+			<java
+				jar="${jmeter.home}\lib\ext\CMDRunner.jar"
+				fork="true">
+				<arg value="--tool" />
+				<arg value="Reporter" />
+				<arg value="--generate-png" />
+				<arg
+					value="${jmeter.home}\Reportes\ThreadsStateOverTime.png" />
+				<arg value="--input-jtl" />
+				<arg
+					value="${jmeter.home}\Reportes\JMeterResults.xml" />
+				<arg value="--plugin-type" />
+				<arg value="ThreadsStateOverTime" />
+				<arg value="--width" />
+				<arg value="800" />
+				<arg value="--height" />
+				<arg value="600" />
+			</java>
+		</sequential>
+	</target>
+</project>
