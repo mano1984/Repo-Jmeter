@@ -48,8 +48,7 @@
 		<jmeter jmeterhome="${jmeter.home}"
 			testplan="${jmeter.home}\Export BadBoy\Badboy_formulario.jmx"
 			resultlog="${jmeter.home}\Reportes\JMeterResults.xml"
-			failureProperty="test.fail"
-			runremote="true"> 
+			failureProperty="test.fail"> 
 
 			<!-- Indicar valores predeterminados -->
 			<property name="jmeter.save.saveservice.output_format"
@@ -60,7 +59,7 @@
 			
 			<property name="runremote" value="true" />
 			
-			<property name="remote_hosts" value="172.23.1.125:3333"/>
+			<property name="remote_hosts" value="172.23.1.109:3333"/>
 
 		</jmeter>
 	</target>
