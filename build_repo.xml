@@ -46,7 +46,7 @@
 			file="${jmeter.home}\Reportes\ThreadsStateOverTime.png"></delete>
 
 		<jmeter jmeterhome="${jmeter.home}"
-			testplan="${jmeter.home}\Pruebas Adapter\Consulta REST.jmx"
+			testplan="${jmeter.home}\Export BadBoy\Badboy_formulario.jmx"
 			resultlog="${jmeter.home}\Reportes\JMeterResults.xml"
 			failureProperty="test.fail"
 			runremote="true"> 
