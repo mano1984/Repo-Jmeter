@@ -4,11 +4,11 @@
 
 	<!-- Ruta donde se encuentra el JMeter -->
 	<property name="jmeter.home"
-		value="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10" />
+		value="\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10" />
 
 	<!-- Se indica la ruta de la carpeta "extras" de ANT -->
 	<path id="jmeter.classpath">
-		<fileset dir="C:\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras">
+		<fileset dir="\Mano\JMeter\apache-jmeter-2.10\apache-jmeter-2.10\extras">
 			<include name="ant-jmeter*.jar" />
 		</fileset>
 	</path>
